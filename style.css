@@ -617,7 +617,7 @@ button {
   font-size: 0.825rem;
 }
 
-/* Responsive Media Queries - Hallmark Disciplines */
+/* Responsive Media Queries - Hallmark Anti-Slop Disciplines */
 @media (max-width: 1024px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -629,16 +629,115 @@ button {
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    padding-top: 7rem;
+    padding-bottom: 3.5rem;
+  }
+  
+  .hero-title {
+    font-size: clamp(2.1rem, 7.5vw, 3rem);
+  }
+
+  .nav-wrapper {
+    position: relative;
+  }
+
   .nav-links {
     display: none;
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--text-ink);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1.1rem;
+    box-shadow: var(--shadow-card);
+    z-index: 1000;
   }
+
+  .nav-links.active {
+    display: flex;
+  }
+
   .mobile-toggle {
     display: flex;
   }
+
+  .hero-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
   .process-grid {
     grid-template-columns: 1fr;
   }
+
   .case-study-grid {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .hero-section {
+    padding-top: 6.5rem;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .metric-item .number {
+    font-size: 1.85rem;
+  }
+
+  .metric-item .label {
+    font-size: 0.85rem;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-cta-group .btn-primary,
+  .hero-cta-group .btn-secondary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .filter-wrapper {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filter-btn {
+    white-space: nowrap;
+  }
+
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-container {
+    padding: 1.5rem 1.15rem;
+    max-height: 92vh;
+    border-width: 1.5px;
+    box-shadow: 4px 4px 0px rgba(28, 25, 23, 0.9);
+  }
+
+  .modal-container div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
