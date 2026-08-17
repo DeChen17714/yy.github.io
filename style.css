@@ -798,6 +798,10 @@ button.case-card {
   object-position: center 85%;
 }
 
+.media-figure .modal-image[src*="lenovo-participant-results"] {
+  object-position: center 54%;
+}
+
 .media-figure .modal-image[src*="lenovo-live-calligraphy"] {
   object-position: center 70%;
 }
