@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  /* OKLCH Off-Register Light Palette */
+  /* OKLCH / Hex Off-Register Light Palette */
   --bg-paper: #faf7f2;
   --bg-surface: #f3ede2;
   --bg-card: #ffffff;
@@ -17,7 +17,8 @@
 
   --text-ink: #1c1917;
   --text-body: #44403c;
-  --text-muted: #78716c;
+  /* Updated contrast-safe text-muted (4.97:1 on #faf7f2, passes WCAG AA) */
+  --text-muted: #716a65;
 
   --accent-vermilion: #d9381e;
   --accent-vermilion-light: rgba(217, 56, 30, 0.08);
@@ -63,6 +64,10 @@ body {
   min-height: 100vh;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 /* Typography Disciplines - Hallmark Gate 38a: No italic headers */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
@@ -99,6 +104,22 @@ button {
   background: none;
 }
 
+/* Accessible Focus Rings */
+:focus-visible {
+  outline: 2px solid var(--accent-vermilion);
+  outline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible,
+.filter-btn:focus-visible,
+.case-card:focus-visible,
+.modal-close:focus-visible,
+.mobile-toggle:focus-visible {
+  outline: 2px solid var(--accent-vermilion);
+  outline-offset: 3px;
+}
+
 /* Layout Utilities */
 .container {
   width: 100%;
@@ -111,6 +132,31 @@ button {
   padding: 6.5rem 0;
 }
 
+.section-surface {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-ink);
+  border-bottom: 1px solid var(--border-ink);
+}
+
+.section-surface-top {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-ink);
+}
+
+
+.section-copy {
+  color: var(--text-body);
+  max-width: 720px;
+}
+
+.about-card h3 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.about-card p + p {
+  margin-top: 1rem;
+}
 /* Off-Register Header & Navigation */
 .site-header {
   position: fixed;
@@ -170,6 +216,7 @@ button {
   font-weight: 600;
   color: var(--text-muted);
   transition: var(--transition-fast);
+  padding: 0.25rem 0;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -190,6 +237,7 @@ button {
   border: 1px solid var(--text-ink);
   box-shadow: var(--shadow-tactile);
   transition: var(--transition-fast);
+  text-decoration: none;
 }
 
 .btn-primary:hover {
@@ -211,6 +259,7 @@ button {
   font-weight: 700;
   font-size: 0.9rem;
   transition: var(--transition-fast);
+  text-decoration: none;
 }
 
 .btn-secondary:hover {
@@ -219,20 +268,43 @@ button {
   box-shadow: 3px 3px 0px var(--text-ink);
 }
 
-/* Mobile Menu Toggle */
+/* Mobile Menu Toggle (Semantic Button Contract) */
 .mobile-toggle {
   display: none;
   flex-direction: column;
   gap: 5px;
-  width: 28px;
-  height: 22px;
+  width: 32px;
+  height: 28px;
   justify-content: center;
+  align-items: center;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.mobile-toggle:hover {
+  border-color: var(--border-ink);
 }
 
 .mobile-toggle span {
-  width: 100%;
+  width: 24px;
   height: 2px;
   background: var(--text-ink);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  display: block;
+}
+
+.mobile-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* Hero Section */
@@ -298,6 +370,8 @@ button {
   font-size: 2.25rem;
   font-weight: 700;
   color: var(--accent-vermilion);
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
 }
 
 .metric-item .label {
@@ -355,11 +429,25 @@ button {
   margin-bottom: 1rem;
 }
 
-/* 5-Step Process Timeline - Tactile Cards */
+/* About Section Card Component */
+.about-card {
+  background: var(--bg-card);
+  border: 1px solid var(--text-ink);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  margin-bottom: 4rem;
+  box-shadow: var(--shadow-card);
+}
+
+/* 4 / 5-Step Process Timeline - Tactile Cards */
 .process-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
+}
+
+.process-grid.cols-5 {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .process-card {
@@ -440,6 +528,13 @@ button {
   box-shadow: var(--shadow-card);
   transition: var(--transition-smooth);
   cursor: pointer;
+  position: relative;
+}
+
+button.case-card {
+  width: 100%;
+  color: inherit;
+  text-align: left;
 }
 
 .case-card:hover {
@@ -448,12 +543,18 @@ button {
   box-shadow: var(--shadow-tactile);
 }
 
+/* State Class for Filtering */
+.case-card.is-hidden {
+  display: none !important;
+}
+
 .case-media {
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 4/3;
   overflow: hidden;
   position: relative;
   border-bottom: 1px solid var(--border-ink);
+  background: var(--bg-surface);
 }
 
 .case-media img {
@@ -465,6 +566,22 @@ button {
 
 .case-card:hover .case-media img {
   transform: scale(1.04);
+}
+
+/* Portrait & Screenshot Media Variants */
+.case-media.is-portrait,
+.media-portrait {
+  aspect-ratio: 3/4;
+}
+
+.case-media.is-screenshot,
+.media-screenshot {
+  background: var(--bg-surface);
+}
+
+.case-media.is-screenshot img,
+.media-screenshot img {
+  object-fit: contain;
 }
 
 .case-badge {
@@ -479,6 +596,7 @@ button {
   font-size: 0.725rem;
   font-weight: 700;
   color: var(--accent-vermilion);
+  z-index: 2;
 }
 
 .case-body {
@@ -547,6 +665,7 @@ button {
   z-index: 2000;
   background: rgba(28, 25, 23, 0.75);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -554,11 +673,13 @@ button {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  visibility: hidden;
 }
 
 .modal-overlay.active {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
 }
 
 .modal-container {
@@ -603,6 +724,126 @@ button {
   color: #fff;
 }
 
+/* Modal Gallery & Grid Components */
+.modal-grid,
+.modal-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-grid-1col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-image {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-ink);
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.modal-image.is-screenshot,
+.gallery-screenshot img {
+  object-fit: contain;
+  background: var(--bg-surface);
+}
+
+.modal-lead {
+  color: var(--text-body);
+  margin: 0.75rem 3rem 1.5rem 0;
+}
+
+.modal-section-title {
+  font-size: 1.15rem;
+  margin: 1.5rem 0 0.6rem;
+}
+
+.modal-list {
+  color: var(--text-body);
+  margin: 0 0 0 1.25rem;
+}
+
+.modal-list li + li {
+  margin-top: 0.45rem;
+}
+
+.media-figure {
+  min-width: 0;
+}
+
+.media-figure .modal-image {
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.media-figure.is-screenshot .modal-image {
+  object-fit: contain;
+  background: var(--bg-surface);
+}
+
+.media-caption {
+  margin-top: 0.45rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.evidence-note {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--accent-vermilion);
+  background: var(--accent-vermilion-light);
+  color: var(--text-body);
+  font-size: 0.88rem;
+}
+
+/* Contact & Compliance Hub Components */
+.contact-wrapper {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.contact-cta-group {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.disclaimer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--text-ink);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--text-body);
+  line-height: 1.7;
+  box-shadow: var(--shadow-card);
+}
+
+.disclaimer-title {
+  color: var(--text-ink);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-family: var(--font-display);
+}
+
 /* Footer Section */
 .site-footer {
   padding: 4rem 0 2.5rem 0;
@@ -624,6 +865,9 @@ button {
     gap: 3rem;
   }
   .process-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .process-grid.cols-5 {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -671,11 +915,18 @@ button {
     gap: 1.25rem;
   }
 
-  .process-grid {
+  .process-grid,
+  .process-grid.cols-5 {
     grid-template-columns: 1fr;
   }
 
   .case-study-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-grid,
+  .modal-gallery,
+  .modal-grid-3col {
     grid-template-columns: 1fr;
   }
 }
@@ -736,8 +987,37 @@ button {
     box-shadow: 4px 4px 0px rgba(28, 25, 23, 0.9);
   }
 
-  .modal-container div[style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
+  .modal-grid,
+  .modal-gallery,
+  .modal-grid-3col {
+    grid-template-columns: 1fr;
   }
 }
 
+/* Reduced Motion - Hallmark Gate: Respect User Preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .case-media img,
+  .case-card,
+  .modal-overlay,
+  .modal-container,
+  .btn-primary,
+  .btn-secondary,
+  .btn-link,
+  .filter-btn,
+  .nav-link,
+  .mobile-toggle span {
+    transition: none !important;
+    transform: none !important;
+  }
+}
